@@ -1,4 +1,9 @@
+import os
+import pandas as pd
+
 import streamlit as st
+from langchain.agents import create_pandas_dataframe_agent
+from langchain.chat_models import ChatOpenAI
 from langchain.llms import OpenAI
 from langchain.prompts import PromptTemplate
 
@@ -16,6 +21,11 @@ def load_LLM():
     llm = OpenAI(model_name=option_llm, temperature=0)
     return llm
 
+def load_pandas_agent():
+    chat = ChatOpenAI(model_name="gpt-4", temperature=0.0)
+    df = pd.read_csv("data/sales_data.csv")
+    agent = create_pandas_dataframe_agent(chat, df, verbose=False)
+    return agent
 
 ##############################################################################
 
@@ -46,9 +56,11 @@ question_text = get_question()
 if question_text:
     st.markdown(f"_chosen llm_: {option_llm}")
     prompt_formatted = prompt.format(query=question_text)
-    # st.write(prompt_formatted)
-    llm = load_LLM()
-    response = llm(prompt_formatted)
+    # llm = load_LLM()
+    # response = llm(prompt_formatted)
+    agent = load_pandas_agent()
+    response = agent.run(prompt_formatted)
+    st.write(f"Your question: {question_text}")
     st.write(response)
 
 ##############################################################################
