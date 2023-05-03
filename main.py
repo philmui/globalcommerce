@@ -62,6 +62,6 @@ with col1:
     st.markdown("* 3rd party enhanced reasoning")
 
 with col2:
-    st.image(image="plugins.png", width=500, caption="salesforce.com")
+    st.image(image="images/plugins.png", width=500, caption="salesforce.com")
 
 ##############################################################################
