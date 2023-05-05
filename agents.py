@@ -1,7 +1,18 @@
+##############################################################################
+# Agent interfaces that bridges private capability agents (pandas, 
+# sql, ...), 3rd party plugin agents (search, weather, movie, ...),
+# and 3rd party LLMs
+#
+# @philmui
+# Mon May 1 18:34:45 PDT 2023
+##############################################################################
+
 
 from langchain.schema import HumanMessage
-from langchain.prompts import PromptTemplate, ChatPromptTemplate, HumanMessagePromptTemplate
-from models import load_chat_agent, load_chained_agent, load_sales_agent, load_sqlite_agent
+from langchain.prompts import PromptTemplate, ChatPromptTemplate, \
+                              HumanMessagePromptTemplate
+from models import load_chat_agent, load_chained_agent, load_sales_agent, \
+                   load_sqlite_agent
 
 # To parse outputs and get structured data back
 from langchain.output_parsers import StructuredOutputParser, ResponseSchema
@@ -19,19 +30,21 @@ instruct_prompt = PromptTemplate(
 )
 
 response_schemas = [
-    ResponseSchema(name="artist", description="The name of the musical artist"),
-    ResponseSchema(name="song", description="The name of the song that the artist plays")
+    ResponseSchema(name="artist", 
+                   description="The name of the musical artist"),
+    ResponseSchema(name="song", 
+                   description="The name of the song that the artist plays")
 ]
 
-# The parser that will look for the LLM output in my schema and return it back to me
 output_parser = StructuredOutputParser.from_response_schemas(response_schemas)
 format_instructions = output_parser.get_format_instructions()
-print(format_instructions)
+
 
 chat_prompt = ChatPromptTemplate(
     messages=[
-        HumanMessagePromptTemplate.from_template("Given a command from the user, extract the artist and song names \n \
-                                                    {format_instructions}\n{user_prompt}")  
+        HumanMessagePromptTemplate.from_template(
+            "Given a command from the user, extract the artist and \
+             song names \n{format_instructions}\n{user_prompt}")  
     ],
     input_variables=["user_prompt"],
     partial_variables={"format_instructions": format_instructions}

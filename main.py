@@ -1,3 +1,12 @@
+##############################################################################
+# Main script that builds the UI & connects the logic for an LLM-driven
+# query frontend to a "Global Commerce" demo app.
+#
+# @philmui
+# Mon May 1 18:34:45 PDT 2023
+##############################################################################
+
+
 import streamlit as st
 from agents import instructAgent, salesAgent, chinookAgent, chatAgent
 
@@ -60,7 +69,8 @@ col1, col2, col3 = st.columns([1,1,1])
 with col1:
     st.markdown("__Common sense reasoning__")
     st.text_area(label="o1", label_visibility="collapsed",
-                 value="> Why is the sky blue?\n> How to avoid touching a hot stove?")
+                 value="> Why is the sky blue?\n" +
+                       "> How to avoid touching a hot stove?")
 
 with col2:
     st.markdown("__Local ('secure') analysis__")
@@ -70,8 +80,11 @@ with col2:
 with col3:
     st.markdown("__Enhanced reasoning__")
     st.text_area(label="o3", label_visibility="collapsed",
-                 value="> Who is the president of South Korea?  What is his favorite song?  What is the smallest prime greater than his age?")
+                 value="> Who is the president of South Korea?  " +
+                       "What is his favorite song?  " +
+                       "What is the smallest prime greater than his age?")
 
 st.image(image="images/plugins.png", width=700, caption="salesforce.com")
 st.image(image="images/chinook.png", width=700, caption="Chinook Digital Media")
+
 ##############################################################################

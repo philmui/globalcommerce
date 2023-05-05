@@ -1,3 +1,10 @@
+##############################################################################
+# Utility methods for building LLMs and agent models
+#
+# @philmui
+# Mon May 1 18:34:45 PDT 2023
+##############################################################################
+
 import os
 import pandas as pd
 
@@ -15,12 +22,18 @@ def load_chat_agent(verbose=False):
     return chat
 
 def load_sales_agent(verbose=False):
+    '''
+    Hard-coded agent that gates an internal sales CSV file for demo
+    '''
     chat = ChatOpenAI(model_name="gpt-4", temperature=0.0)
     df = pd.read_csv("data/sales_data.csv")
     agent = create_pandas_dataframe_agent(chat, df, verbose=verbose)
     return agent
 
 def load_sqlite_agent(model_name="text-davinci-003"):
+    '''
+    Hard-coded agent that gates a sqlite DB of digital media for demo
+    '''
     llm = OpenAI(model_name=model_name, temperature=0)
     sqlite_db_path = "./data/Chinook_Sqlite.sqlite"
     db = SQLDatabase.from_uri(f"sqlite:///{sqlite_db_path}")
@@ -44,4 +57,3 @@ def load_chained_agent(verbose=False, model_name="text-davinci-003"):
                              return_intermediate_steps=True)
     return agent
 
-__all__ = ['prompt']
