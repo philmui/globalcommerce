@@ -39,6 +39,12 @@ response_schemas = [
 output_parser = StructuredOutputParser.from_response_schemas(response_schemas)
 format_instructions = output_parser.get_format_instructions()
 
+LOCAL_MAGIC_TOKENS = ["my company", "for us", "our company", "our sales"]
+DIGITAL_MAGIC_TOKENS = ["digital media", "our database", "our digital"]
+
+def is_magic(sentence, magic_tokens):
+    return any([t in sentence.lower() for t in magic_tokens])
+
 
 chat_prompt = ChatPromptTemplate(
     messages=[
@@ -56,25 +62,29 @@ def chatAgent(chat_message):
         agent = load_chat_agent(verbose=True)
         output = agent([HumanMessage(content=chat_message)])
     except:
-        output = ""
+        output = "Please rephrase and try chat again."
     return output
 
 
 def instructAgent(question_text, model_name):
     instruction = instruct_prompt.format(query=question_text)
     output = ""
-    try:
-        agent = load_chained_agent(verbose=True, model_name=model_name)
-        response = agent({"input": instruction})
-        if response is None or "not available" in response["output"]:
-            response = ""
-        else:
-            output = response["output"]
-    except: 
-        output = ""
 
-    if len(output) < 12: 
+    if is_magic(question_text, LOCAL_MAGIC_TOKENS):
         output = salesAgent(instruction)
+    elif is_magic(question_text, DIGITAL_MAGIC_TOKENS):
+        output = chinookAgent(question_text, model_name)
+    else:
+        try:
+            agent = load_chained_agent(verbose=True, model_name=model_name)
+            response = agent({"input": instruction})
+            if response is None or "not available" in response["output"]:
+                response = ""
+            else:
+                output = response["output"]
+        except: 
+            output = "Please rephrase and try again ..."
+
     return output
 
 
@@ -85,7 +95,7 @@ def salesAgent(instruction):
         output = agent.run(instruction)
         print("panda> " + output)
     except:
-        output = "Sorry: no response possible right now"
+        output = "Please rephrase and try again for company sales data"
     return output
 
 def chinookAgent(instruction, model_name):
@@ -95,5 +105,5 @@ def chinookAgent(instruction, model_name):
         output = agent.run(instruction)
         print("chinook> " + output)
     except:
-        output = "Sorry: no response possible right now"
+        output = "Please rephrase and try again for digital media data"
     return output

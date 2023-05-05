@@ -12,7 +12,9 @@ from agents import instructAgent, salesAgent, chinookAgent, chatAgent
 
 ##############################################################################
 
-st.set_page_config(page_title="Global Commerce", page_icon=":robot:")
+st.set_page_config(page_title="Global Commerce", 
+                   page_icon=":cart:", 
+                   layout="wide")
 st.header("📦 Global Commerce 🛍️")
 
 col1, col2 = st.columns([1,1])
@@ -31,8 +33,8 @@ with col1:
 with col2:
     option_mode = st.selectbox(
         "LLM mode",
-        ("Instruct",
-         "Chat",
+        ("Instruct (all)",
+         "Chat (high temperature)",
          "Wolfram-Alpha",
          "Internal-Sales",
          "Internal-Merchant"
@@ -52,7 +54,7 @@ if question_text:
         output = salesAgent(question_text)
     elif option_mode == "Internal-Merchant":
         output = chinookAgent(question_text, option_llm)
-    elif option_mode == "Chat":
+    elif option_mode.startswith("Chat"):
         output = chatAgent(question_text).content
     else:
         output = instructAgent(question_text, option_llm)
@@ -63,28 +65,47 @@ if question_text:
 
 ##############################################################################
 
+st.markdown(
+    """
+    <style>
+    textarea[aria-label^="ex"] {
+            font-size: 0.8em !important;
+            font-family: Arial, sans-serif !important;
+            color: gray !important;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
 st.markdown("#### 3 types of reasoning:")
 col1, col2, col3 = st.columns([1,1,1])
 
 with col1:
     st.markdown("__Common sense reasoning__")
-    st.text_area(label="o1", label_visibility="collapsed",
-                 value="> Why is the sky blue?\n" +
-                       "> How to avoid touching a hot stove?")
+    st.text_area(label="ex1", label_visibility="collapsed", height=120,
+                 value="🔹 Why is the sky blue?\n" +
+                       "🔹 How to avoid touching a hot stove?\n" +
+                       "🔹 Please advise on how best to prepare for retirement?"
+                       )
 
 with col2:
-    st.markdown("__Local ('secure') analysis__")
-    st.text_area(label="o2", label_visibility="collapsed",
-                 value="> What is our total sales per month?")
+    st.markdown("__Local ('secure') reasoning__")
+    st.text_area(label="ex2", label_visibility="collapsed", height=120,
+                 value="🔹 For my company, what is the total sales " +
+                       "broken down by month?\n" +
+                       "🔹 How many total artists are there in each "+
+                       "genres in our digital media database?")
 
 with col3:
-    st.markdown("__Enhanced reasoning__")
-    st.text_area(label="o3", label_visibility="collapsed",
-                 value="> Who is the president of South Korea?  " +
-                       "What is his favorite song?  " +
-                       "What is the smallest prime greater than his age?")
+    st.markdown("__Enhanced reasoning__ [🎵](https://www.youtube.com/watch?v=hTTUaImgCyU&t=62s)")
+    st.text_area(label="ex3", label_visibility="collapsed", height=120,
+                 value="🔹 Who is the president of South Korea?  " +
+                       "What is <a>his favorite song</a>?  " +
+                       "What is the smallest prime greater than his age?\n" +
+                       "🔹 What is the derivative of f(x)=3*log(x)*sin(x)?")
 
 st.image(image="images/plugins.png", width=700, caption="salesforce.com")
-st.image(image="images/chinook.png", width=700, caption="Chinook Digital Media")
+st.image(image="images/chinook.png", width=420, caption="Digital Media Schema")
 
 ##############################################################################

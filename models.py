@@ -17,11 +17,11 @@ from langchain.llms import OpenAI
 from langchain import SQLDatabase, SQLDatabaseChain
 
 
-def load_chat_agent(verbose=False):
-    chat = ChatOpenAI(model_name="gpt-4", temperature=0.0)
+def load_chat_agent(verbose=True):
+    chat = ChatOpenAI(model_name="gpt-4", temperature=0.7)
     return chat
 
-def load_sales_agent(verbose=False):
+def load_sales_agent(verbose=True):
     '''
     Hard-coded agent that gates an internal sales CSV file for demo
     '''
@@ -40,7 +40,7 @@ def load_sqlite_agent(model_name="text-davinci-003"):
     db_chain = SQLDatabaseChain(llm=llm, database=db, verbose=True)
     return db_chain
 
-def load_chained_agent(verbose=False, model_name="text-davinci-003"):
+def load_chained_agent(verbose=True, model_name="text-davinci-003"):
     llm = OpenAI(model_name=model_name, temperature=0)
     toolkit = load_tools(["serpapi", "open-meteo-api", "news-api", 
                           "python_repl", "wolfram-alpha", 
