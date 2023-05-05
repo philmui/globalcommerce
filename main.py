@@ -86,6 +86,7 @@ with col1:
     st.text_area(label="ex1", label_visibility="collapsed", height=120,
                  value="🔹 Why is the sky blue?\n" +
                        "🔹 How to avoid touching a hot stove?\n" +
+                       "🔹 Please give tips to win a 3200m track race?\n" +
                        "🔹 Please advise on how best to prepare for retirement?"
                        )
 
@@ -101,7 +102,7 @@ with col3:
     st.markdown("__Enhanced reasoning__ [🎵](https://www.youtube.com/watch?v=hTTUaImgCyU&t=62s)")
     st.text_area(label="ex3", label_visibility="collapsed", height=120,
                  value="🔹 Who is the president of South Korea?  " +
-                       "What is <a>his favorite song</a>?  " +
+                       "What is his favorite song? How old is he? " +
                        "What is the smallest prime greater than his age?\n" +
                        "🔹 What is the derivative of f(x)=3*log(x)*sin(x)?")
 
