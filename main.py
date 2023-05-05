@@ -1,49 +1,10 @@
-import os
-import pandas as pd
-
 import streamlit as st
-from langchain.agents import load_tools
-from langchain.agents import initialize_agent
-from langchain.agents import create_pandas_dataframe_agent
-from langchain.chat_models import ChatOpenAI
-from langchain.llms import OpenAI
-from langchain.prompts import PromptTemplate
-
-prompt_template = """
-Please answer this question succinctly and professionally:
-{query}
-
-If you don't know the answer, just reply: not available.
-"""
-
-prompt = PromptTemplate(
-    input_variables=["query"],
-    template=prompt_template
-)
-
-def load_pandas_agent():
-    chat = ChatOpenAI(model_name="gpt-4", temperature=0.0)
-    df = pd.read_csv("data/sales_data.csv")
-    agent = create_pandas_dataframe_agent(chat, df, verbose=False)
-    return agent
-
-def load_chained_agent():
-    llm = OpenAI(model_name=option_llm, temperature=0)
-    serpapi_api_key=os.getenv('SERPAPI_API_KEY')
-    toolkit = load_tools(["serpapi", "wolfram-alpha"], 
-                         llm=llm, 
-                         serpapi_api_key=serpapi_api_key)
-    agent = initialize_agent(toolkit, 
-                             llm, 
-                             agent="zero-shot-react-description", 
-                             verbose=False, 
-                             return_intermediate_steps=True)
-    return agent
+from agents import instructAgent, salesAgent, chinookAgent, chatAgent
 
 ##############################################################################
 
 st.set_page_config(page_title="Global Commerce", page_icon=":robot:")
-st.header("Global Commerce")
+st.header("📦 Global Commerce 🛍️")
 
 col1, col2 = st.columns([1,1])
 
@@ -53,6 +14,8 @@ with col1:
         ('text-davinci-003', 
          'text-babbage-001', 
          'text-ada-001',
+         'gpt-4',
+         'gpt-3.5-turbo',
          'cohere',
          'dolly')
     )
@@ -61,53 +24,54 @@ with col2:
         "LLM mode",
         ("Instruct",
          "Chat",
-         "Pandas",
-         "Wolfram Alpha")
+         "Wolfram-Alpha",
+         "Internal-Sales",
+         "Internal-Merchant"
+         )
     )
 
 def get_question():
     input_text = st.text_area(label="Your question ...", 
-                              placeholder="Ask me here.",
-                              key="question_text")
+                              placeholder="Ask me anything ...",
+                              key="question_text", label_visibility="collapsed")
     return input_text
 
 question_text = get_question()
 if question_text:
-    st.markdown(f"_chosen llm_: {option_llm}")
-    prompt_formatted = prompt.format(query=question_text)
-    output = ""
+    output=""
+    if option_mode == "Internal-Sales":
+        output = salesAgent(question_text)
+    elif option_mode == "Internal-Merchant":
+        output = chinookAgent(question_text, option_llm)
+    elif option_mode == "Chat":
+        output = chatAgent(question_text).content
+    else:
+        output = instructAgent(question_text, option_llm)
 
-    try:
-        agent = load_chained_agent()
-        response = agent({"input": prompt_formatted})
-        if response is None or "not available" in response["output"]:
-            response = ""
-        else:
-            output = response["output"]
-    except: 
-        output = ""
-
-    if len(output) < 12: 
-        try:
-            agent = load_pandas_agent()
-            output = agent.run(prompt_formatted)
-            print("==> " + output)
-        except:
-            output = "Sorry: no response possible right now"
-
-    st.write(output)
+    height = min(2*len(output), 280)
+    st.text_area(label="In response ...", 
+                 value=output, height=height)
 
 ##############################################################################
 
-col1, col2 = st.columns([1,2])
+st.markdown("#### 3 types of reasoning:")
+col1, col2, col3 = st.columns([1,1,1])
 
 with col1:
-    st.markdown("#### 3 types of reasoning:")
-    st.markdown("* LLM and common sense reasoning")
-    st.markdown("* local ('secure') data analysis")
-    st.markdown("* 3rd party enhanced reasoning")
+    st.markdown("__Common sense reasoning__")
+    st.text_area(label="o1", label_visibility="collapsed",
+                 value="> Why is the sky blue?\n> How to avoid touching a hot stove?")
 
 with col2:
-    st.image(image="images/plugins.png", width=500, caption="salesforce.com")
+    st.markdown("__Local ('secure') analysis__")
+    st.text_area(label="o2", label_visibility="collapsed",
+                 value="> What is our total sales per month?")
 
+with col3:
+    st.markdown("__Enhanced reasoning__")
+    st.text_area(label="o3", label_visibility="collapsed",
+                 value="> Who is the president of South Korea?  What is his favorite song?  What is the smallest prime greater than his age?")
+
+st.image(image="images/plugins.png", width=700, caption="salesforce.com")
+st.image(image="images/chinook.png", width=700, caption="Chinook Digital Media")
 ##############################################################################
