@@ -18,7 +18,7 @@ from models import load_chat_agent, load_chained_agent, load_sales_agent, \
 from langchain.output_parsers import StructuredOutputParser, ResponseSchema
 
 instruct_template = """
-Please answer this question succinctly and professionally:
+Please answer this question clearly with easy to follow reasoning:
 {query}
 
 If you don't know the answer, just reply: not available.

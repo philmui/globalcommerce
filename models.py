@@ -18,7 +18,7 @@ from langchain import SQLDatabase, SQLDatabaseChain
 
 
 def load_chat_agent(verbose=True):
-    chat = ChatOpenAI(model_name="gpt-4", temperature=0.7)
+    chat = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0.5)
     return chat
 
 def load_sales_agent(verbose=True):
@@ -44,7 +44,7 @@ def load_chained_agent(verbose=True, model_name="text-davinci-003"):
     llm = OpenAI(model_name=model_name, temperature=0)
     toolkit = load_tools(["serpapi", "open-meteo-api", "news-api", 
                           "python_repl", "wolfram-alpha", 
-                          "pal-math", "pal-colored-objects", "tmdb-api"], 
+                          "pal-math", "pal-colored-objects"],  # "tmdb-api"], 
                             llm=llm, 
                             serpapi_api_key=os.getenv('SERPAPI_API_KEY'),
                             news_api_key=os.getenv('NEWS_API_KEY'),

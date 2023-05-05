@@ -24,11 +24,10 @@ with col1:
         "Model",
         ('text-davinci-003', 
          'text-babbage-001', 
+         'text-curie-001', 
          'text-ada-001',
          'gpt-4',
-         'gpt-3.5-turbo',
-         'cohere',
-         'dolly')
+         'gpt-3.5-turbo')
     )
 with col2:
     option_mode = st.selectbox(
@@ -55,7 +54,11 @@ if question_text:
     elif option_mode == "Internal-Merchant":
         output = chinookAgent(question_text, option_llm)
     elif option_mode.startswith("Chat"):
-        output = chatAgent(question_text).content
+        response = chatAgent(question_text)
+        if response and response.content:
+            output = response.content
+        else:
+            output = response
     else:
         output = instructAgent(question_text, option_llm)
 
