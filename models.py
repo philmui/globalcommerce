@@ -72,14 +72,14 @@ from langchain.tools import DuckDuckGoSearchRun, GoogleSearchRun
 from langchain.utilities import GoogleSearchAPIWrapper
 def load_chained_agent(verbose=True, model_name="text-davinci-003"):
     llm = createLLM(model_name)
-    toolkit = [DuckDuckGoSearchRun()]
-    toolkit += load_tools(["serpapi", "open-meteo-api", "news-api", 
+    toolkit = load_tools(["serpapi", "open-meteo-api", "news-api", 
                            "python_repl", "wolfram-alpha"], 
                             llm=llm, 
                             serpapi_api_key=os.getenv('SERPAPI_API_KEY'),
                             news_api_key=os.getenv('NEWS_API_KEY'),
                             tmdb_bearer_token=os.getenv('TMDB_BEARER_TOKEN')
                             )
+    toolkit += [DuckDuckGoSearchRun()]
 
     agent = initialize_agent(toolkit, 
                              llm, 

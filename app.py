@@ -68,6 +68,7 @@ if question_text and len(question_text) > 1:
     height = min(2*len(output), 280)
     st.text_area(label="In response ...", 
                  value=output, height=height)
+    ## st.code(output, language="markdown")
 
 ##############################################################################
 
