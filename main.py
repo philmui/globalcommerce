@@ -27,7 +27,10 @@ with col1:
          'text-curie-001', 
          'text-ada-001',
          'gpt-4',
-         'gpt-3.5-turbo')
+         'gpt-3.5-turbo',
+         'google/flan-t5-xl',
+         'databricks/dolly-v2',
+         'bigscience/bloom-1b7')
     )
 with col2:
     option_mode = st.selectbox(
@@ -47,7 +50,7 @@ def get_question():
     return input_text
 
 question_text = get_question()
-if question_text:
+if question_text and len(question_text) > 1:
     output=""
     if option_mode == "Internal-Sales":
         output = salesAgent(question_text)

@@ -1,6 +1,8 @@
 charset-normalizer
 chromadb
 fastapi
+duckduckgo-search
+google-api-python-client
 google-search-results
 langchain
 nltk

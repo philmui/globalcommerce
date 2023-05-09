@@ -7,12 +7,15 @@
 # Mon May 1 18:34:45 PDT 2023
 ##############################################################################
 
-
 from langchain.schema import HumanMessage
 from langchain.prompts import PromptTemplate, ChatPromptTemplate, \
                               HumanMessagePromptTemplate
 from models import load_chat_agent, load_chained_agent, load_sales_agent, \
                    load_sqlite_agent
+
+import logging
+
+logger = logging.getLogger(__name__)
 
 # To parse outputs and get structured data back
 from langchain.output_parsers import StructuredOutputParser, ResponseSchema
@@ -67,23 +70,28 @@ def chatAgent(chat_message):
 
 
 def instructAgent(question_text, model_name):
-    instruction = instruct_prompt.format(query=question_text)
     output = ""
 
     if is_magic(question_text, LOCAL_MAGIC_TOKENS):
-        output = salesAgent(instruction)
+        output = salesAgent(question_text)
+        print(f"🔹 salesAgent")
     elif is_magic(question_text, DIGITAL_MAGIC_TOKENS):
         output = chinookAgent(question_text, model_name)
+        print(f"🔹 chinookAgent")
     else:
         try:
+            instruction = instruct_prompt.format(query=question_text)
+            logger.info(f"instruction: {instruction}")
             agent = load_chained_agent(verbose=True, model_name=model_name)
-            response = agent({"input": instruction})
+            response = agent([instruction])
             if response is None or "not available" in response["output"]:
                 response = ""
             else:
-                output = response["output"]
-        except: 
+                output = response['output']
+                logger.info(f"🔹 Steps: {response['intermediate_steps']}")
+        except Exception as e: 
             output = "Please rephrase and try again ..."
+            print(f"\t{e}")
 
     return output
 
