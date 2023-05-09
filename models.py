@@ -28,10 +28,11 @@ OPENAI_CHAT_LLMS = [
 
 HUGGINGFACE_LLMS = [
     'google/flan-t5-xl',
-    'databricks/dolly-v2',
+    'databricks/dolly-v2-3b',
     'bigscience/bloom-1b7'
 ]
 
+HUGGINGFACEHUB_API_TOKEN = os.getenv("HUGGINGFACEHUB_API_TOKEN")
 
 def createLLM(model_name="text-davinci-003", temperature=0):
     llm = None
@@ -73,8 +74,7 @@ def load_chained_agent(verbose=True, model_name="text-davinci-003"):
     llm = createLLM(model_name)
     toolkit = [DuckDuckGoSearchRun()]
     toolkit += load_tools(["serpapi", "open-meteo-api", "news-api", 
-                           "python_repl", "wolfram-alpha", "llm-math",
-                           "pal-math", "pal-colored-objects"], 
+                           "python_repl", "wolfram-alpha"], 
                             llm=llm, 
                             serpapi_api_key=os.getenv('SERPAPI_API_KEY'),
                             news_api_key=os.getenv('NEWS_API_KEY'),

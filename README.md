@@ -1,12 +1,14 @@
+---
+title: Globe Commerce
+emoji: 🌎
+colorFrom: blue
+colorTo: indigo
+sdk: streamlit
+sdk_version: 1.19.0
+app_file: app.py
+pinned: false
+python_version: 3.9.16
+license: mit
+---
 
-# Global Commerce with LLM
-
-@philmui
-Wed May  3 08:23:15 PDT 2023
-
-Sample questions:
-
-- How many orders are there in this file?
-- What is the average order size?
-- What is the average order size in dollars?
-- What is the average order size in dollars by month?
+Check out the configuration reference at https://huggingface.co/docs/hub/spaces-config-reference

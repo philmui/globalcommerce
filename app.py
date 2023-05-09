@@ -12,10 +12,10 @@ from agents import instructAgent, salesAgent, chinookAgent, chatAgent
 
 ##############################################################################
 
-st.set_page_config(page_title="Global Commerce", 
+st.set_page_config(page_title="Global", 
                    page_icon=":cart:", 
                    layout="wide")
-st.header("📦 Global Commerce 🛍️")
+st.header("📦 Global 🛍️")
 
 col1, col2 = st.columns([1,1])
 

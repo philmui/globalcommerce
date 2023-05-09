@@ -74,10 +74,10 @@ def instructAgent(question_text, model_name):
 
     if is_magic(question_text, LOCAL_MAGIC_TOKENS):
         output = salesAgent(question_text)
-        print(f"🔹 salesAgent")
+        print(f"🔹 salesAgent: {output}")
     elif is_magic(question_text, DIGITAL_MAGIC_TOKENS):
         output = chinookAgent(question_text, model_name)
-        print(f"🔹 chinookAgent")
+        print(f"🔹 chinookAgent: {output}")
     else:
         try:
             instruction = instruct_prompt.format(query=question_text)
@@ -91,7 +91,7 @@ def instructAgent(question_text, model_name):
                 logger.info(f"🔹 Steps: {response['intermediate_steps']}")
         except Exception as e: 
             output = "Please rephrase and try again ..."
-            print(f"\t{e}")
+            logger.error(e)
 
     return output
 
@@ -102,8 +102,9 @@ def salesAgent(instruction):
         agent = load_sales_agent(verbose=True)
         output = agent.run(instruction)
         print("panda> " + output)
-    except:
-        output = "Please rephrase and try again for company sales data"
+    except Exception as e:
+        logger.error(e)
+        output = f"Please rephrase and try again for company sales data {e}"
     return output
 
 def chinookAgent(instruction, model_name):
@@ -112,6 +113,7 @@ def chinookAgent(instruction, model_name):
         agent = load_sqlite_agent(model_name)
         output = agent.run(instruction)
         print("chinook> " + output)
-    except:
+    except Exception as e:
+        logger.error(e)
         output = "Please rephrase and try again for digital media data"
     return output
