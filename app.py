@@ -8,7 +8,8 @@
 
 
 import streamlit as st
-from agents import instructAgent, salesAgent, chinookAgent, chatAgent
+from pprint import pprint
+from agents import agentController, salesAgent, chinookAgent, chatAgent
 
 ##############################################################################
 
@@ -63,12 +64,12 @@ if question_text and len(question_text) > 1:
         else:
             output = response
     else:
-        output = instructAgent(question_text, option_llm)
+        output = agentController(question_text, option_llm)
 
     height = min(2*len(output), 280)
     st.text_area(label="In response ...", 
                  value=output, height=height)
-    ## st.code(output, language="markdown")
+    # st.code(pprint(output), language="markdown")
 
 ##############################################################################
 

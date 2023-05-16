@@ -69,7 +69,7 @@ def chatAgent(chat_message):
     return output
 
 
-def instructAgent(question_text, model_name):
+def agentController(question_text, model_name):
     output = ""
 
     if is_magic(question_text, LOCAL_MAGIC_TOKENS):
@@ -90,7 +90,7 @@ def instructAgent(question_text, model_name):
                 output = response['output']
                 logger.info(f"🔹 Steps: {response['intermediate_steps']}")
         except Exception as e: 
-            output = "Please rephrase and try again ..."
+            output = "Most likely ran out of tokens ..."
             logger.error(e)
 
     return output
@@ -104,7 +104,7 @@ def salesAgent(instruction):
         print("panda> " + output)
     except Exception as e:
         logger.error(e)
-        output = f"Please rephrase and try again for company sales data {e}"
+        output = f"Rephrasing your prompt could get better sales results {e}"
     return output
 
 def chinookAgent(instruction, model_name):
@@ -115,5 +115,5 @@ def chinookAgent(instruction, model_name):
         print("chinook> " + output)
     except Exception as e:
         logger.error(e)
-        output = "Please rephrase and try again for digital media data"
+        output = "Rephrasing your prompt could get better db results {e}"
     return output
